@@ -3,8 +3,12 @@
 ;;
 ;;; math
 
+;; name: (square n)
+;; desc: evaluate for n * n
 (define (square n) (* n n))
 
+;; name: (smallest-divisor n)
+;; desc: smallest divisor of number n
 (define (smallest-divisor n)
   (find-divisor n 2))
 
@@ -13,9 +17,13 @@
         ((divides? test-divisor n) test-divisor)
         (else (find-divisor n (+ test-divisor 1)))))
 
+;; name: (divides? a b)
+;; desc: is a divide b? another language is a%b
 (define (divides? a b)
   (= (remainder b a) 0))
 
+;; name: (prime? n)
+;; desc: is n prime?
 (define (prime? n)
   (= n (smallest-divisor n)))
 
@@ -80,6 +88,13 @@
 
 ;; name:
 ;; desc:
+(define (stream-ref s n)
+  (if (= n 0)
+      (stream-car s)
+      (stream-ref (stream-cdr s) (- n 1))))
+
+;; name:
+;; desc:
 (define (stream-map proc s)
   (if (stream-null? s)
       the-empty-stream
@@ -109,13 +124,6 @@
 
 ;; name:
 ;; desc:
-(define (stream-nth s n)
-  (if (= n 0)
-      (stream-car s)
-      (stream-nth (stream-cdr s) (- n 1))))
-
-;; name:
-;; desc:
 (define (stream-for-each proc s)
   (if (stream-null? s)
       'done
@@ -128,6 +136,7 @@
   (stream-for-each (lambda (element) (newline) (display element))
                    s))
 
+
 ;; name:
 ;; desc:
 (define (stream-enumerate-interval start end)
@@ -137,17 +146,22 @@
        start
        (stream-enumerate-interval (+ start 1) end))))
 
+
 ;;
 ;;; stream data
+
+;; name:
+;; desc:
 (define (integers-starting-from n)
   (cons-stream n (integers-starting-from (+ n 1))))
+(define integers (integers-starting-from 0))
 
 
 ;;
-;;; iterator procedure with traditional style
+;;; traditional style procedure
 
 ;; sum of all primes at range [a, b]
-(define (sum-primes a b)
+(define (prime-sum a b)
   (define (iter count accum)
     (cond ((> count b) accum)
           ((prime? count)
@@ -156,9 +170,9 @@
   (iter a 0))
 
 ;; nth prime at range [a, b]
-(define (prime-nth a b n)
+(define (prime-ref a b n)
   (define (iter test prime count)
-    (cond ((> count n) 'none)
+    (cond ((> test b) 'none)
           ((= count n) prime)
           ((prime? test)
            (iter (+ test 1) test (+ count 1)))
@@ -167,17 +181,17 @@
 
 
 ;;
-;;; procedure with stream style
+;;; stream style procedure 
 
 ;; sum of all primes at range [a, b]
-(define (stream-sum-primes a b)
+(define (stream-prime-sum a b)
   (stream-accumulate +
                      0
                      (stream-filter prime?
                                     (stream-enumerate-interval a b))))
 
 ;; nth prime at range [a, b]
-(define (stream-prime-nth a b n)
-  (stream-nth (stream-filter prime?
+(define (stream-prime-ref a b n)
+  (stream-ref (stream-filter prime?
                              (stream-enumerate-interval a b))
               n))
