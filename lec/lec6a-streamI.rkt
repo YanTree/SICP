@@ -1,5 +1,11 @@
 #lang sicp
 
+;; import racket `provide` and `all-defined-out`
+(#%require (only racket
+                 provide
+                 all-defined-out))
+
+
 ;;
 ;;; math
 
@@ -21,6 +27,11 @@
 ;; desc: is a divide b? another language is a%b
 (define (divides? a b)
   (= (remainder b a) 0))
+
+;; name:
+;; desc:
+(define (divisible? a b)
+  (= (remainder a b) 0))
 
 ;; name: (prime? n)
 ;; desc: is n prime?
@@ -152,9 +163,9 @@
 
 ;; name:
 ;; desc:
-(define (integers-starting-from n)
-  (cons-stream n (integers-starting-from (+ n 1))))
-(define integers (integers-starting-from 0))
+;; (define (integers-starting-from n)
+;;   (cons-stream n (integers-starting-from (+ n 1))))
+;; (define integers (integers-starting-from 0))
 
 
 ;;
@@ -195,3 +206,9 @@
   (stream-ref (stream-filter prime?
                              (stream-enumerate-interval a b))
               n))
+
+
+;; export this file, so another '#lang sicp' file can simple use
+;; with (#%require "lec6a-streamI.rkt")
+;; https://louischristopher.me/setting-up-drracket-for-sicp
+(provide (all-defined-out))
